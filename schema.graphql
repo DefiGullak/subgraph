@@ -1,0 +1,42 @@
+type Account @entity {
+  id: ID!
+  hodlings: [AccountHodling!]! @derivedFrom(field: "account")
+}
+
+type AccountHodling @entity {
+  " Equals to ${account}-${otoken}"
+  id: ID!
+  account: Account!
+  token: HToken!
+  balance: BigInt!
+  shareBalance: BigInt!
+}
+
+type HToken @entity {
+  id: ID!
+
+  name: String!
+  symbol: String!
+  decimals: Int!
+
+  token: Bytes! # address
+  bonusToken: Bytes! #address
+  creator: Bytes! # address
+  penalty: Int!
+  fee: Int!
+  feeRecipient: Bytes! # address
+  expiry: Int!
+  lockWindow: Int!
+  createdAt: Int!
+  createdTx: Bytes!
+
+  n: Int!
+
+  tokenBalance: BigInt!
+  bonusTokenBalance: BigInt!
+  totalShares: BigInt!
+  totalFee: BigInt!
+  totalReward: BigInt!
+
+  hodlings: [AccountHodling!]! @derivedFrom(field: "token")
+}

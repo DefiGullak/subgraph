@@ -1,0 +1,60 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: GullakERC20Factory
+    network: {{network}}
+    source:
+      address: "{{factory}}"
+      abi: GullakERC20Factory
+      startBlock: {{factory-start-block}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - HodlCreated
+      abis:
+        - name: GullakERC20Factory
+          file: ./abis/GullakERC20Factory.json
+        - name: GullakERC20
+          file: ./abis/GullakERC20.json
+      eventHandlers:
+        - event: HodlCreated(address,indexed address,indexed uint256,uint256,indexed uint256,uint256,uint256,address,address,address)
+          handler: handleHodlCreated
+      file: ./src/gullakFactory.ts
+      
+
+templates:
+  - name: GullakERC20
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: GullakERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - Deposit
+        - Exit
+        - Redeem
+        - Transfer
+        - Withdraw
+      abis:
+        - name: GullakERC20
+          file: ./abis/GullakERC20.json
+      eventHandlers:
+        - event: Deposit(address,address,uint256,uint256)
+          handler: handleDeposit
+        - event: Exit(address,uint256,uint256,uint256)
+          handler: handleExit
+        - event: Redeem(address,uint256,uint256,uint256)
+          handler: handleRedeem
+        - event: Withdraw(address,uint256)
+          handler: handleWithdraw
+        - event: Donate(address,uint256,address)
+          handler: handleDonate
+      file: ./src/gullakErc20.ts
